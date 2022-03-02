@@ -21,12 +21,11 @@ class ApplicationsController < ApplicationController
 
   # POST /applications or /applications.json
   def create
-    @application = Application.new(application_params)
-    @application.owner_id = current_user.id
-    @application.owner_type = current_user.class.name
+    result = Service::CreateApplication.call(params: application_params, user: current_user)
+    @application = result.application
 
     respond_to do |format|
-      if @application.save
+      if result.success?
         format.html { redirect_to application_url(@application), notice: "Application was successfully created." }
         format.json { render :show, status: :created, location: @application }
       else
