@@ -4,3 +4,18 @@ Metrics/BlockLength:
   Exclude:
     - '**/*.gemspec'
     - '**/*_spec.rb'
+Style/TrailingCommaInHashLiteral:
+  Description: 'Checks for trailing comma in hash literals.'
+  Enabled: true
+  # If `comma`, the cop requires a comma after the last item in a hash,
+  # but only when each item is on its own line.
+  # If `consistent_comma`, the cop requires a comma after the last item of all
+  # non-empty, multiline hash literals.
+  EnforcedStyleForMultiline: comma
+  SupportedStylesForMultiline:
+    - comma
+    - consistent_comma
+    - no_comma
+  VersionAdded: '0.53'
+Style/Documentation:
+  Enabled: false
