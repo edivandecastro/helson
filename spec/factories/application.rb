@@ -4,7 +4,7 @@ FactoryBot.define do
     client_id { Faker::Internet.uuid }
     client_secret { Faker::Code.sin }
     redirect_uri { Faker::Internet.url(host: 'example.com', path: '/oauth/callback') }
-    scopes { "#{Faker::Hobby.activity}, #{Faker::Team.state}" }
+    scopes { "#{Faker::Hobby.activity} #{Faker::Team.state}" }
     owner_id { Faker::Internet.uuid }
     owner_type { "User" }
   end
