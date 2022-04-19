@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Service
   module Error
     class InvalidClient < Service::Failure
