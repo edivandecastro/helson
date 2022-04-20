@@ -3,19 +3,22 @@
 module Service
   class ValidateResponseType < Base
     def call
-      context.validate_response_type = context.response_type == 'code'
-      context.fail(error) unless context.validate_response_type
-      context
+      validate_parameter_response_type
+      return context if context.failure?
+
+      context.response_type_valid = context.response_type == 'code'
+      return context if context.response_type_valid
+
+      context.class_error = Service::Error::InvalidResponseType
+      Service::ThrowError.call(context)
     end
 
     private
 
-    def error
-      {
-        status: 400, # move to constant
-        type: :invalid_request, # move to constant
-        message: "Invalid response_type: #{context.response_type}", # move translate
-      }
+    def validate_parameter_response_type
+      context.required_parameter = :response_type
+      Service::ValidateParameter.call(context)
+      context.response_type_valid = context.success?
     end
   end
 end

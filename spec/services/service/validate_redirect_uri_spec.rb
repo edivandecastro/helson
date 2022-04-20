@@ -57,6 +57,30 @@ RSpec.describe Service::ValidateRedirectUri, type: :model do
           expect(context.redirect_uri_valid).to eq false
         end
       end
+
+      context 'when parameter redirect_uri is nil' do
+        let(:params) { { client_id: app.client_id, app:, redirect_uri: nil } }
+
+        it 'return context failure' do
+          expect(context.failure?).to be true
+        end
+
+        it 'return message with error "Missing required parameter: redirect_uri"' do
+          expect(context.message).to eq 'Missing required parameter: redirect_uri'
+        end
+
+        it 'return status with 400' do
+          expect(context.status).to eq 400
+        end
+
+        it 'return type with :invalid_request' do
+          expect(context.type).to eq :invalid_request
+        end
+
+        it 'return redirect_uri_valid with false' do
+          expect(context.redirect_uri_valid).to eq false
+        end
+      end
     end
 
     context 'when context not have app' do
