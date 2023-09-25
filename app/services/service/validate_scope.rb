@@ -1,34 +1,30 @@
 # frozen_string_literal: true
 
 module Service
-  class ValidateScope < Base
+  class ValidateScope < Actor
+    input :application
+    input :scopes
+    output :scope_valid
+    output :scope_invalid
+
     def call
-      validate_parameter_scopes
-      return context if context.failure?
+      self.application ||= Application.find_by(client_id: self.application.client_id)
+      separate_scopes
+      return if self.scope_invalid.empty?
 
-      app = context.app || Application.find_by(client_id: context.client_id)
-      separate_scopes(scopes: app.scopes.split)
-      context.scopes_valid = context.scope_invalid.empty?
-      return context if context.scopes_valid
-
-      context.class_error = Service::Error::InvalidScope
-      Service::ThrowError.call(context)
+      fail!(error: I18n.t('services.errors.invalid_scope',
+            scope_valid: self.scope_valid.join(', '), scope_invalid: self.scope_invalid.join(', ')))
     end
 
     private
 
-    def validate_parameter_scopes
-      context.required_parameter = :scopes
-      Service::ValidateParameter.call(context)
-      context.scopes_valid = context.success?
-    end
+    def separate_scopes
+      self.scope_valid = []
+      self.scope_invalid = []
+      application_scopes = self.application.scopes.split
 
-    def separate_scopes(scopes:)
-      context.scope_valid = []
-      context.scope_invalid = []
-
-      context.scopes.split.each do |scope|
-        scopes.include?(scope) ? context.scope_valid.push(scope) : context.scope_invalid.push(scope)
+      scopes.split.each do |scope|
+        application_scopes.include?(scope) ? self.scope_valid.push(scope) : self.scope_invalid.push(scope)
       end
     end
   end

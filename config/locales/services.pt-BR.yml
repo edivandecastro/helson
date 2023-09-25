@@ -1,0 +1,10 @@
+pt-BR:
+  services:
+    errors:
+      client_not_found: The OAuth client was not found
+      missing_required_parameter: "Missing required parameter: %{params}"
+      invalid_response_type: "Invalid response_type: %{response_type}"
+      redirect_uri_mismatch:
+        - Unable to sign in to the app because it doesn\'t comply with OAuth 2.0 policy.
+        - If you are the app developer, record the redirect URI in the your application.
+      invalid_scope: "Some requested scopes were invalid. {valid=[%{scope_valid}], invalid=[%{scope_invalid}]}"

@@ -4,53 +4,43 @@ require 'rails_helper'
 
 RSpec.describe Service::ValidateParameter, type: :model do
   describe '.call' do
-    let(:context) { Service::ValidateParameter.call(params) }
 
-    context 'when parameter client_id is nil' do
-      let(:params) { { required_parameter: :client_id } }
+    context 'when all parameters is nil' do
+      it 'raise error ServiceActor::Failure' do
+        params = 'client_id, redirect_uri, response_type, scopes'
+        message = I18n.t('services.errors.missing_required_parameter', params: params)
 
-      it 'return context failure' do
-        expect(context.failure?).to be true
-      end
-
-      it 'return context with class Service::Error::MissingRequiredParameter' do
-        expect(context.class_error).to eq Service::Error::MissingRequiredParameter
-      end
-
-      it 'return context with status 400' do
-        expect(context.status).to eq 400
-      end
-
-      it 'return context with message "Missing required parameter: client_id"' do
-        expect(context.message).to eq 'Missing required parameter: client_id'
+        expect { Service::ValidateParameter.call(client_id: nil,
+                                                 redirect_uri: nil,
+                                                 response_type: nil,
+                                                 scopes: nil,
+                                                 state: nil) }.to raise_error(ServiceActor::Failure, message)
       end
     end
 
-    context 'when parameter client_id is empty' do
-      let(:params) { { required_parameter: :client_id, client_id: '' } }
+    context 'when all parameters is empty' do
+      it 'raise error ServiceActor::Failure' do
+        message = "Missing required parameter: client_id, redirect_uri, response_type, scopes"
 
-      it 'return context failure' do
-        expect(context.failure?).to be true
-      end
-
-      it 'return context with class Service::Error::MissingRequiredParameter' do
-        expect(context.class_error).to eq Service::Error::MissingRequiredParameter
-      end
-
-      it 'return context with status 400' do
-        expect(context.status).to eq 400
-      end
-
-      it 'return context with message "Missing required parameter: client_id"' do
-        expect(context.message).to eq 'Missing required parameter: client_id'
+        expect { Service::ValidateParameter.call(client_id: '',
+                                                 redirect_uri: '',
+                                                 response_type: '',
+                                                 scopes: nil,
+                                                 state: '') }.to raise_error(ServiceActor::Failure, message)
       end
     end
 
-    context 'when parameter client_id is present' do
-      let(:params) { { required_parameter: :client_id, client_id: 'example' } }
+    context 'when all parameters is present' do
+      let(:application) { build(:application) }
 
-      it 'return context success' do
-        expect(context.success?).to be true
+      it 'return context with success' do
+        result = Service::ValidateParameter.call(client_id: application.client_id,
+                                                  redirect_uri: application.redirect_uri,
+                                                  response_type: 'code',
+                                                  scopes: application.scopes,
+                                                  state: nil)
+
+        expect(result.success?).to be true
       end
     end
   end

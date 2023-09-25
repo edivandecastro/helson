@@ -1,31 +1,22 @@
 # frozen_string_literal: true
 
 module Service
-  class ValidateRedirectUri < Base
+  class ValidateRedirectUri < Actor
+    input :client_id, type: String, allow_nil: false
+    input :application
+    input :redirect_uri, type: String
+
     def call
-      validate_parameter_redirect_uri
-      return context if context.failure?
+      self.application ||= Application.find_by(client_id: self.application.client_id)
+      return if application_include_redirect_uri?
 
-      context.redirect_uri_valid = app_include_redirect_uri?
-      return context if context.redirect_uri_valid
-
-      context.class_error = Service::Error::RedirectUriMismatch
-      Service::ThrowError.call(context)
+      fail!(error: I18n.t('services.errors.redirect_uri_mismatch').join(' '))
     end
 
     private
 
-    def validate_parameter_redirect_uri
-      context.required_parameter = :redirect_uri
-      Service::ValidateParameter.call(context)
-      context.redirect_uri_valid = context.success?
-    end
-
-    def app_include_redirect_uri?
-      app = context.app || Application.find_by(client_id: context.client_id)
-      return false if app.nil?
-
-      context.redirect_uri.include?(app.redirect_uri)
+    def application_include_redirect_uri?
+      self.redirect_uri.include?(self.application.redirect_uri)
     end
   end
 end
