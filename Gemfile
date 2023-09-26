@@ -24,6 +24,7 @@ gem 'service_actor', '~> 3.7'
 group :development, :test do
   gem 'debug', platforms: %i[mri mingw x64_mingw]
   gem 'factory_bot_rails'
+  gem 'shoulda-matchers', '~> 5.3'
   gem 'faker'
   gem 'pry-byebug'
   gem 'rspec-rails'
