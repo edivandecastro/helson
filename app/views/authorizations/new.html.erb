@@ -1,2 +1,14 @@
-<h1>Authorizations#new</h1>
-<p>Find me in app/views/authorizations/new.html.erb</p>
+<% if @error %>
+  <%= @error %>
+<% else %>
+<%= form_with(url: "/oauth/authorize", method: :post, local: true) do |f|%>
+  <%= hidden_field_tag "client_id", params[:client_id] %>
+  <%= hidden_field_tag "redirect_uri", params[:redirect_uri] %>
+  <%= hidden_field_tag "response_type", params[:response_type] %>
+  <%= hidden_field_tag "scope", params[:scope] %>
+  <%= hidden_field_tag "state", params[:state] %>
+  <%= f.submit "Autorizar" %>
+<% end %>
+  <h1>Authorizations#new</h1>
+  <p>Find me in app/views/authorizations/new.html.erb</p>
+<% end %>
