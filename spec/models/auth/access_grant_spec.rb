@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Auth::AccessGrant, type: :model do
+RSpec.describe Oauth::AccessGrant, type: :model do
   it "Factory" do
     expect(FactoryBot.create(:access_grant)).to be_valid
   end

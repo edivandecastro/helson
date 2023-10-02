@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :application, class: Auth::Application do
+  factory :application, class: Oauth::Application do
     name { Faker::Name.name }
     client_id { Faker::Internet.uuid }
     client_secret { Faker::Code.sin }
