@@ -8,7 +8,7 @@ module Service
     output :scope_invalid
 
     def call
-      self.application ||= Application.find_by(client_id: self.application.client_id)
+      self.application ||= Oauth::Application.find_by(client_id: self.application.client_id)
       separate_scopes
       return if self.scope_invalid.empty?
 

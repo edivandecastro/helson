@@ -6,7 +6,7 @@ module Service
     output :application
 
     def call
-      self.application = Application.find_by(client_id: client_id)
+      self.application = Oauth::Application.find_by(client_id: client_id)
       fail!(error: I18n.t('services.errors.client_not_found')) if application.nil?
     end
   end

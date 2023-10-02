@@ -7,7 +7,7 @@ module Service
     input :redirect_uri, type: String
 
     def call
-      self.application ||= Application.find_by(client_id: self.application.client_id)
+      self.application ||= Oauth::Application.find_by(client_id: self.application.client_id)
       return if application_include_redirect_uri?
 
       fail!(error: I18n.t('services.errors.redirect_uri_mismatch').join(' '))
