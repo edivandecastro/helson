@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_09_25_160618) do
+ActiveRecord::Schema[7.0].define(version: 2023_10_03_214625) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -28,6 +28,20 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_160618) do
     t.index ["application_id"], name: "index_access_grants_on_application_id"
     t.index ["token"], name: "index_access_grants_on_token", unique: true
     t.index ["user_id"], name: "index_access_grants_on_user_id"
+  end
+
+  create_table "access_tokens", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "token", null: false
+    t.string "refresh_token", null: false
+    t.integer "expires_in", null: false
+    t.datetime "revoked_at"
+    t.string "scopes", null: false
+    t.uuid "user_id", null: false
+    t.uuid "application_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["application_id"], name: "index_access_tokens_on_application_id"
+    t.index ["user_id"], name: "index_access_tokens_on_user_id"
   end
 
   create_table "applications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -57,5 +71,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_09_25_160618) do
 
   add_foreign_key "access_grants", "applications"
   add_foreign_key "access_grants", "users"
+  add_foreign_key "access_tokens", "applications"
+  add_foreign_key "access_tokens", "users"
   add_foreign_key "applications", "users"
 end
