@@ -11,5 +11,8 @@ class CreateAccessTokens < ActiveRecord::Migration[7.0]
 
       t.timestamps
     end
+
+    add_index :access_tokens, :token, unique: true
+    add_index :access_tokens, :refresh_token, unique: true
   end
 end

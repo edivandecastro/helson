@@ -41,6 +41,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_10_03_214625) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["application_id"], name: "index_access_tokens_on_application_id"
+    t.index ["refresh_token"], name: "index_access_tokens_on_refresh_token", unique: true
+    t.index ["token"], name: "index_access_tokens_on_token", unique: true
     t.index ["user_id"], name: "index_access_tokens_on_user_id"
   end
 
